@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="student">
+	
+	<!--	 
+		실행할 sql 문 작성 
+		<select><inset>,udpate, delte 태그이
+	
+	
+	
+	
+	-->
+	<insert id="insertStudent">
+		INSERT INTO STUDENT VALUES(SEQ_STUDENT.NEXTVAL,'유병승','01012341234','YOO@YOO.COM','경기도시흥시',DEFAULT)
+	</insert>
+	<!-- 
+		파라미터가 있는 insert 문 작성하기
+		parameterType 속성을 이용해서 전달된 값을 설정
+		#{key}
+	 -->
+	<insert id="insertStudentByName" parameterType="string">
+		INSERT INTO STUDENT VALUES(SEQ_STUDENT.NEXTVAL,#{name},'01012341234','YOO@YOO.COM','경기도시흥시',DEFAULT)
+		
+	</insert>
+	
+	<insert id="insertStudentTest" parameterType="com.mybatis.model.dto.Student">
+		INSERT INTO STUDENT VALUES(SEQ_STUDENT.NEXTVAL,#{studentName},#{studentTel},#{studentEmail},#{studentAddress},DEFAULT)
+	</insert>
+	<update id="updateStudent" parameterType="com.mybatis.model.dto.Student">
+		UPDATE STUDENT SET STUDENT_TEL = #{studentTel}, STUDENT_EMAIL=#{studentEmail}, STUDENT_ADDR=#{studentAddress} WHERE STUDENT_NO = #{studentNo}
+	</update>
+	<delete id="deleteStudent" parameterType="_int">
+		DELETE STUDENT WHERE STUDENT_NO=#{studentNo}
+	</delete>
+	
+	<!-- 
+		select 문 실행하기 
+		resultType||resultMap 속성을 설정해조야 한다.
+		-> 반환도니ㅡㄴ 값에 대한 타입을 설정 -> mybatis 가 가져온 DB에	정보를 저장하는 DTO 객체 설정
+		
+		resultType : 필드명과 컬럼명이 일치할 경오 ㅅㅏ용 -> java 타입을 패키지 명까지 작성
+		resultMap : 필드명, 커럼명이 일치할 경우 사용 ->java 타입을 패키지명까지 작성
+		
+이	-->
+	<select id="selectStudentCount" resultType="_int">
+		
+		
+	</select>
+	
+	<resultMap id="studentMap" type="com.mybatis.model.dto.Student">
+       <id column = "student_no" property = "studentNo"/>
+       <result column="student_name" property="studentName"/>
+       <result column="student_tel" property="studentTel"/>
+       <result column="student_email" property="studentEmail"/>
+       <result column="student_addr" property="studentAddress"/>
+    </resultMap>
+	
+	
+	<!-- selectList 는 이미 리스트로 반환되는 걸 알고있다.. 따라서 제네릭 타입을 resultMap 에 넣어주기만 하면 됨 -->
+	<select id="selectStudentAll" resultMap="studentMap">
+		SELECT * FROM STUDENT
+	</select>
+	
+	<select id="searchstudentbyname" parameterType="string" resultMap="studentMap">
+		SELECT * FROM STUDENT WHERE STUDENT_NAME LIKE #{name}
+		<!-- SELECT * FROM STUDENT WHERE STUDENT_NAME LIKE '%${name}%' -->
+	</select>
+	
+	<select id="selectStudentByNameMap" parameterType="_int" resultType="map">
+		SELECT * FROM STUDENT WHERE STUDENT_NO = #{no}
+	</select>
+	
+	<select id="studentAllMap" resultType="map">
+		SELECT * FROM STUDENT
+	</select>
+	
+	<select id="selectStudentPage" resultMap="studentMap">
+		SELECT * FROM STUDENT ORDER BY REG_DATE DESC	
+	</select>
+
+</mapper>
